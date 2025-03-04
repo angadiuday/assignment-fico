@@ -1,0 +1,60 @@
+<div class="container">
+    <div *ngIf="error$ | async as error" class="error">
+      {{ error }}
+    </div>
+
+    <div *ngIf="loading$ | async" class="loading">
+      Loading table for users.
+    </div>
+
+    <table *ngIf="!(loading$ | async) && (users$ | async)?.length">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Website</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let user of users$ | async">
+          <ng-container *ngIf="(editingUserId$ | async) === user.id; else displayRow">
+            <td>{{ user.id }}</td>
+            <td>
+              <input [formControl]="getControl('name')" />
+            </td>
+            <td>
+              <input [formControl]="getControl('username')" />
+            </td>
+            <td>
+              <input [formControl]="getControl('email')" />
+            </td>
+            <td>
+              <input [formControl]="getControl('phone')" />
+            </td>
+            <td>
+              <input [formControl]="getControl('website')" />
+            </td>
+            <td>
+              <button (click)="saveUser()">Save</button>
+              <button class="cancel" (click)="cancelEdit()">Cancel</button>
+            </td>
+          </ng-container>
+          <ng-template #displayRow>
+            <td>{{ user.id }}</td>
+            <td>{{ user.name }}</td>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phone }}</td>
+            <td>{{ user.website }}</td>
+            <td>
+              <button (click)="editUser(user)">Edit</button>
+            </td>
+          </ng-template>
+        </tr>
+      </tbody>
+    </table>
+  </div>
